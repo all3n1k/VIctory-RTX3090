@@ -8,6 +8,15 @@ Experimental compatibility layer and shader translation runtime for running Xbox
 
 ---
 
+## Water status (2026-11-27)
+
+The sea still renders flat blue where the console shows teal-green with
+absorption. The cause is proven — the wave-wide allowlist is inverted for the
+water programs — and the fix is staged but not yet merged:
+[docs/water.md](docs/water.md).
+
+---
+
 ## Key Features & Recent Improvements
 
 - **Pareto Memory Residency & 32 GB RAM Support:** Adaptive GPU memory residency limits, preventing WDDM paging exhaustion (`0x8007000E`) on 16–32 GB systems.
