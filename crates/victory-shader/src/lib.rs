@@ -6,6 +6,7 @@
 //! (compiler options) and the zlib-compressed GFX10 code. The bitcode may use
 //! console-only intrinsics, so the GFX10 code is translated in general.
 
+pub mod bvh;
 pub mod dxbc;
 pub mod dxil;
 pub mod emit;
@@ -13,21 +14,25 @@ pub mod gfx10;
 pub mod io;
 pub mod ir;
 pub mod native;
-pub mod range;
 pub mod resource;
+pub mod spill;
 pub mod structure;
+
+/// The version of what the translator makes, part of the key of every
+/// cached translation (`victory-gpu`'s `shader_cache`): **bump it with any
+/// change that changes the translation of a shader** (its DXIL or what the
+/// host binds for it). Changes that do not (speed, diagnostics, tests,
+/// shaders that did not translate before) leave it, and every shader
+/// translated before is kept across the rebuild. `victory shaders`
+/// translates again what an earlier build of the translator cached and says
+/// how many came out different: if any did, the bump was due.
+pub const TRANSLATOR_VERSION: u32 = 2;
 
 pub use dxbc::{Container, FourCC, Part};
 pub use dxil::{DxilProgram, ShaderKind, XboxExtras};
 pub use native::{
     HwStage, NativeProgram, ResourceType, RootParam, RootType, UsedResource, native_programs,
 };
-
-/// A hash of what this translator is built from: its sources, manifest and
-/// build script, the workspace's lock file and the compiler's version. Caches
-/// of translations key on it, so a changed translator never serves an old
-/// translation.
-pub const SOURCE_HASH: &str = env!("VICTORY_SHADER_SOURCE_HASH");
 
 #[derive(Debug, thiserror::Error, PartialEq, Eq)]
 pub enum ShaderError {
